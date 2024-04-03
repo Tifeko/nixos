@@ -107,6 +107,7 @@
       spotify
       arandr
       lazygit
+      github-cli
       ];
 
   virtualisation.libvirtd.enable = true;
