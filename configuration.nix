@@ -64,7 +64,7 @@
   #  Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.tijnk = {
      isNormalUser = true;
-     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+     extraGroups = [ "wheel" "libvirt" "video" "kvm" ]; # Enable ‘sudo’ for the user.
   };
   
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
@@ -108,6 +108,7 @@
       arandr
       lazygit
       github-cli
+      go
       ];
 
   virtualisation.libvirtd.enable = true;
