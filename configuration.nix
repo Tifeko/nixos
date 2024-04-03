@@ -49,8 +49,8 @@
 
   nixpkgs.overlays = [
     (final: prev: {
-      dwm = prev.dwm.overrideAttrs (old: {src = /home/tijnk/dwm-Tifeko;});
-      dwmblocks = prev.dwmblocks.overrideAttrs (old: {src = /home/tijnk/dwmblocks;});
+      dwm = prev.dwm.overrideAttrs (old: {src = /etc/nixos/dwm-Tifeko;});
+      dwmblocks = prev.dwmblocks.overrideAttrs (old: {src = /etc/nixos/dwmblocks;});
     })
   ];
 

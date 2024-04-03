@@ -1,0 +1,88 @@
+RUNDIR=$( pwd )
+DISTROBUTION=$( lsb_release -si )
+#DISTROBUTION="kip"
+
+if [ "$DISTROBUTION" = "Arch" ]; then
+     echo "Using arch"
+else
+     echo "Unsupported Distrobution: $DISTROBUTION"
+     echo "Make sure that the lsb-release package is installed"
+     exit
+fi
+
+if [ "$( type -t yay )" = "file" ]; then
+     echo "yay is installed"
+else
+    echo "Installing yay"
+    sudo pacman -S --needed --noconfirm git base-devel
+    git clone https://aur.archlinux.org/yay-bin.git
+    cd yay-bin || exit 
+    makepkg -si --noconfirm
+    if [ "$( type -t yay )" = "file" ]; then
+        echo "Installed yay"
+    else
+        echo "Error installing yay"
+        exit
+    fi
+fi
+
+if [ "$( fc-list | grep "/usr/share/fonts/TTF/MesloLGLDZNerdFontMono-Regular.ttf" )" = "/usr/share/fonts/TTF/MesloLGLDZNerdFontMono-Regular.ttf: MesloLGLDZ Nerd Font Mono:style=Regular" ]; then
+    echo "Nerd fonts are installed"
+else
+    echo "Installing Nerd Fonts"
+    yay -S --needed --noconfirm wget unzip
+    wget "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/Meslo.zip"
+    sudo mkdir -pv /usr/share/fonts/TTF 
+    sudo cp ./Meslo.zip /usr/share/fonts/TTF
+    cd /usr/share/fonts/TTF || exit
+    sudo unzip Meslo.zip
+    sudo rm Meslo.zip
+    sudo rm README.md
+    sudo rm LICENSE.txt
+    sudo wget "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/FiraCode.zip"
+    sudo unzip FiraCode.zip
+    sudo rm FiraCode.zip
+    sudo rm README.md
+    sudo rm LICENSE
+    echo "Installed Nerd Fonts"
+    cd "$RUNDIR" || exit
+fi
+
+if [ "$( type -t kitty )" = "file" ]; then
+    echo "kitty is installed"
+else
+    echo "Installing kitty"
+    yay -S --needed --noconfirm kitty
+    cp "$RUNDIR"/dotconfig/kitty "$HOME"/.config/ -r
+fi
+
+if [ "$( type -t rofi )" = "file" ]; then
+    echo "rofi is installed"
+else
+    yay -S --needed --noconfirm rofi
+    mkdir -pv "$HOME"/.config/rofi
+    cp "$RUNDIR"/dotconfig/rofi "$HOME"/.config/ -r 
+fi
+
+if [ "$( type -t dwm )" = "file" ]; then
+    echo "dwm is installed"
+else 
+    echo "Installing dwm"
+    yay -S --needed --noconfirm xorg
+    make
+    sudo make install
+    sudo mkdir -pv /usr/share/xsessions
+    sudo cp "$RUNDIR"/dwm.desktop /usr/share/xsessions/
+    cp "$RUNDIR"/chicken.jpg "$HOME"/
+fi
+
+if [ "$( type -t dwmblocks )" != "file" ]; then
+echo "Installing dwm blocks"
+git clone https://github.com/Tifeko/dwmblocks.git && cd dwmblocks
+make 
+make install
+fi
+
+echo "Installing depencies"
+yay -S --needed --noconfirm flameshot thunar flatpak feh librewolf-bin dunst picom vesktop-bin sddm arandr nordic-theme
+sudo systemctl enable sddm
